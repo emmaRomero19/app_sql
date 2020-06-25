@@ -1,5 +1,7 @@
+import 'package:appsql/search.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'convert.dart';
 import 'form_insert.dart';
 import 'form_select.dart';
 import 'form_update.dart';
@@ -24,6 +26,7 @@ class _Delete extends State<formulario_delete> {
   String email;
   String phone;
   String matricula=null;
+  String photo;
   int count;
   int currentUserId;
   var bdHelper;
@@ -49,7 +52,7 @@ class _Delete extends State<formulario_delete> {
 
   void verificar() async{
     Student stu =
-    Student(null, name, paterno, materno, phone, email, matricula);
+    Student(null, name, paterno, materno, phone, email, matricula, photo);
     var col = await bdHelper.getMatricula(matricula);
     print(col);
     if (col == 0) {
@@ -65,6 +68,88 @@ class _Delete extends State<formulario_delete> {
         .showSnackBar(new SnackBar(backgroundColor: Colors.deepPurple, content: new Text(value, style: TextStyle(fontSize: 20.0,color: Colors.yellow),)));
   }
 
+  Widget menu() {
+    return Drawer(
+      child: ListView(
+        children: <Widget>[
+          DrawerHeader(
+            padding: EdgeInsets.all(50.0),
+            child: Text(
+              "MENU",
+              style: TextStyle(color: Colors.white, fontSize: 55),
+              textAlign: TextAlign.center,
+            ),
+            decoration: BoxDecoration(color: Colors.deepPurple),
+          ),
+          ListTile(
+            leading: Icon(Icons.content_paste, size: 28.0, color: Colors.deepPurpleAccent),
+            title: Text('BUSCAR', style: TextStyle(fontSize: 20.0, color: Colors.deepPurple)),
+            onTap: () {
+              Navigator.pushReplacement(
+                  context, MaterialPageRoute(builder: (context) => busqueda()));
+            },
+          ),
+          ListTile(
+            leading: Icon(
+              Icons.update,
+              color: Colors.yellowAccent,
+              size: 28.0,
+            ),
+            title: Text(
+              'UPDATE',
+              style: TextStyle(fontSize: 20.0, color: Colors.yellowAccent),
+            ),
+            onTap: () {
+              Navigator.pushReplacement(context,
+                  MaterialPageRoute(builder: (context) => formulario_update()));
+            },
+          ),
+          ListTile(
+            leading: Icon(
+              Icons.add,
+              color: Colors.greenAccent,
+              size: 28.0,
+            ),
+            title: Text('INSERT',
+                style: TextStyle(fontSize: 20.0, color: Colors.greenAccent)),
+            onTap: () {
+              Navigator.pushReplacement(context,
+                  MaterialPageRoute(builder: (context) => formulario_insert()));
+            },
+          ),
+          ListTile(
+            leading: Icon(
+              Icons.delete_forever,
+              color: Colors.red[800],
+              size: 28.0,
+            ),
+            title: Text('ELIMINAR',
+                style: TextStyle(fontSize: 20.0, color: Colors.red[800])),
+            onTap: () {
+              Navigator.pushReplacement(context,
+                  MaterialPageRoute(builder: (context) => formulario_delete()));
+            },
+          ),
+          ListTile(
+            leading: Icon(
+              Icons.location_searching,
+              color: Colors.blue[800],
+              size: 28.0,
+            ),
+            title: Text('SELECT',
+                style: TextStyle(fontSize: 20.0, color: Colors.blue[800])),
+            onTap: () {
+              Navigator.pushReplacement(context,
+                  MaterialPageRoute(builder: (context) => formulario_select()));
+            },
+          ),
+
+        ],
+      ),
+    );
+  }
+
+
   //Mostrar datos
   SingleChildScrollView dataTable(List<Student> Studentss) {
     return SingleChildScrollView(
@@ -73,10 +158,16 @@ class _Delete extends State<formulario_delete> {
           scrollDirection: Axis.horizontal,
           child: DataTable(
             columns: [
-              DataColumn(label: Text("Delete", style: TextStyle(
-                fontSize: 15.0,
-                fontWeight: FontWeight.bold,
-                color: Colors.red,))),
+              DataColumn(
+                label: Text(
+                  "Control",
+                  style: TextStyle(
+                    fontSize: 15.0,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.yellowAccent,
+                  ),
+                ),
+              ),
               DataColumn(
                 label: Text("Matricula",
                     style: TextStyle(
@@ -118,36 +209,41 @@ class _Delete extends State<formulario_delete> {
                         fontSize: 15.0,
                         fontWeight: FontWeight.bold,
                         color: Colors.yellowAccent)),
-              )
+              ),
+              DataColumn(label: Text("Photo",
+                  style: TextStyle(
+                      fontSize: 15.0,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.yellowAccent)),)
             ],
             rows: Studentss.map((student) => DataRow(cells: [
-              DataCell(IconButton(
-                icon: Icon(Icons.delete, color: Colors.red, size: 30.0,),
-                onPressed: () {
-                  bdHelper.delete(student.controlum);
-                  refreshList();
-                  },
-              )),
+              DataCell(Text(student.controlum.toString(),
+                  style: TextStyle(
+                      fontSize: 16.0,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.yellow))),
               DataCell(Text(student.matricula.toString(),
                   style:
-                  TextStyle(fontSize: 16.0, color: Colors.yellow))),
+                  TextStyle(fontSize: 16.0, color: Colors.deepOrange))),
               DataCell(
                 Text(student.name.toString(),
                     style: TextStyle(
-                        fontSize: 16.0, color: Colors.yellow)),
+                        fontSize: 16.0, color: Colors.deepOrange)),
               ),
               DataCell(Text(student.paterno.toString(),
                   style:
-                  TextStyle(fontSize: 16.0, color: Colors.yellow))),
+                  TextStyle(fontSize: 16.0, color: Colors.deepOrange))),
               DataCell(Text(student.materno.toString(),
                   style:
-                  TextStyle(fontSize: 16.0, color: Colors.yellow))),
+                  TextStyle(fontSize: 16.0, color: Colors.deepOrange))),
               DataCell(Text(student.phone.toString(),
                   style:
-                  TextStyle(fontSize: 16.0, color: Colors.yellow))),
+                  TextStyle(fontSize: 16.0, color: Colors.deepOrange))),
               DataCell(Text(student.email.toString(),
                   style:
-                  TextStyle(fontSize: 16.0, color: Colors.yellow))),
+                  TextStyle(fontSize: 16.0, color: Colors.deepOrange))),
+              DataCell(Convertir.imageFromBase64sString(student.photo),
+              ),
             ])).toList(),
           ),
         ));
@@ -177,13 +273,13 @@ class _Delete extends State<formulario_delete> {
   Widget build(BuildContext context) {
     return Scaffold(
       key: _scaffoldKey,
+      drawer: menu(),
       appBar: new AppBar(
         title: Text(
           "DELETE DATA SQFLite",
         ),
         centerTitle: true,
         backgroundColor: Colors.deepPurple,
-        automaticallyImplyLeading: false,
       ),
       body: Container(
           width: MediaQuery.of(context).size.width,
@@ -260,90 +356,6 @@ class _Delete extends State<formulario_delete> {
                 ),
               ),
             ),
-          )),
-      endDrawer: new Drawer(
-        child: ListView(
-          children: <Widget>[
-            DrawerHeader(
-              padding: EdgeInsets.all(50.0),
-              child: Text(
-                "MENU",
-                style: TextStyle(color: Colors.white, fontSize: 55),
-                textAlign: TextAlign.center,
-              ),
-              decoration: BoxDecoration(color: Colors.deepPurple),
-            ),
-            ListTile(
-              leading: Icon(
-                Icons.home,
-                color: Colors.deepPurple,
-                size: 28.0,
-              ),
-              title: Text(
-                'HOME',
-                style: TextStyle(fontSize: 20.0, color: Colors.deepPurple),
-              ),
-              onTap: () {
-                Navigator.pushReplacement(context,
-                    MaterialPageRoute(builder: (context) => MyApp()));
-              },
-            ),
-            ListTile(
-              leading: Icon(
-                Icons.update,
-                color: Colors.yellowAccent,
-                size: 28.0,
-              ),
-              title: Text(
-                'UPDATE',
-                style: TextStyle(fontSize: 20.0, color: Colors.yellowAccent),
-              ),
-              onTap: () {
-                Navigator.pushReplacement(context,
-                    MaterialPageRoute(builder: (context) => formulario_update()));
-              },
-            ),
-            ListTile(
-              leading: Icon(
-                Icons.add,
-                color: Colors.greenAccent,
-                size: 28.0,
-              ),
-              title: Text('INSERT',
-                  style: TextStyle(fontSize: 20.0, color: Colors.greenAccent)),
-              onTap: () {
-                Navigator.pushReplacement(context,
-                    MaterialPageRoute(builder: (context) => formulario_insert()));
-              },
-            ),
-            ListTile(
-              leading: Icon(
-                Icons.delete_forever,
-                color: Colors.red[800],
-                size: 28.0,
-              ),
-              title: Text('ELIMINAR',
-                  style: TextStyle(fontSize: 20.0, color: Colors.red[800])),
-              onTap: () {
-                Navigator.pushReplacement(context,
-                    MaterialPageRoute(builder: (context) => formulario_delete()));
-              },
-            ),
-            ListTile(
-              leading: Icon(
-                Icons.search,
-                color: Colors.blueAccent,
-                size: 28.0,
-              ),
-              title: Text('BUSCAR',
-                  style: TextStyle(fontSize: 20.0, color: Colors.blueAccent)),
-              onTap: () {
-                Navigator.pushReplacement(context,
-                    MaterialPageRoute(builder: (context) => formulario_select()));
-              },
-            ),
-          ],
-        ),
-      ),);
+          )),);
   }
 }

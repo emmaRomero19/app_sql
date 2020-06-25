@@ -5,8 +5,8 @@ import 'dart:async';
 import 'dart:io' as io;
 import 'students.dart';
 import 'package:path/path.dart';
-
-
+import 'package:image_picker/image_picker.dart';
+import 'convert.dart';
 
 class DBHelper {
   static Database _db;
@@ -17,12 +17,11 @@ class DBHelper {
   static const String EMAIL = 'email';
   static const String PHONE = 'phone';
   static const String MATRICULA = 'matricula';
+  static const String PHOTO = 'photo';
   static const String TABLE = 'Students';
   static const String DB_NAME = 'students03.db';
 
-
 //creacion de la base de datos
-
   Future<Database> get db async {
     if (_db != null) {
       return _db;
@@ -44,12 +43,12 @@ class DBHelper {
 
   _onCreate(Database db, int version) async {
     await db.execute(
-        "CREATE TABLE $TABLE ($Id INTEGER PRIMARY KEY, $NAME TEXT, $PATERNO TEXT, $MATERNO TEXT, $PHONE TEXT, $EMAIL TEXT, $MATRICULA TEXT)");
+        "CREATE TABLE $TABLE ($Id INTEGER PRIMARY KEY, $NAME TEXT, $PATERNO TEXT, $MATERNO TEXT, $PHONE TEXT, $EMAIL TEXT, $MATRICULA TEXT, $PHOTO BLOB)");
   }
 
   Future<List<Student>> getStudents(String mat) async {
     var dbClient = await db;
-    List<Map> maps = await dbClient.query(TABLE, columns: [Id, NAME, PATERNO, MATERNO, PHONE, EMAIL, MATRICULA]);
+    List<Map> maps = await dbClient.query(TABLE, columns: [Id, NAME, PATERNO, MATERNO, PHONE, EMAIL, MATRICULA, PHOTO]);
     List<Student> studentss = [];
     if(mat==null){
     if (maps.length > 0) {
@@ -163,12 +162,34 @@ class DBHelper {
         whereArgs: [student.controlum]);
   }
 
+  Future<List<Student>> gets() async {
+    var dbClient = await db;
+    List<Map> maps = await dbClient.query(TABLE, columns: [Id, NAME, PATERNO, MATERNO, PHONE, EMAIL, MATRICULA, PHOTO]);
+    List<Student> studentss = [];
+    if (maps.length > 0) {
+      for (int i = 0; i < maps.length; i++) {
+        studentss.add(Student.fromMap(maps[i]));
+      }
+    }
+    return studentss;
+  }
+
+  Future<List<Student>>select(String buscar) async{
+    final bd = await db;
+    //CONSULTA DE LA BASE PARA EL SELECT
+    List<Map> maps = await bd.rawQuery("SELECT * FROM $TABLE WHERE $MATRICULA LIKE '$buscar%'");
+    List<Student> studentss =[];
+    if (maps.length > 0) {
+      for (int i = 0; i < maps.length; i++){
+        studentss.add(Student.fromMap(maps[i]));
+      }
+    }
+    return studentss;
+  }
 
 //Close Database
   Future closedb() async {
     var dbClient = await db;
     dbClient.close();
   }
-
-
 }

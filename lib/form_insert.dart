@@ -1,3 +1,4 @@
+import 'package:appsql/search.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'form_delete.dart';
@@ -6,6 +7,8 @@ import 'form_update.dart';
 import 'students.dart';
 import 'operation.dart';
 import 'main.dart';
+import 'package:image_picker/image_picker.dart';
+import 'convert.dart';
 
 class formulario_insert extends StatefulWidget {
   @override
@@ -23,12 +26,15 @@ class _Insert extends State<formulario_insert> {
   TextEditingController controllerPhone = TextEditingController();
   TextEditingController controllerEmail = TextEditingController();
   TextEditingController controllerMatricula = TextEditingController();
+  TextEditingController controllerPhoto = TextEditingController();
   String name;
   String paterno;
   String materno;
   String email;
   String phone;
+  String image;
   String matricula=null;
+  String photo;
   int count;
   int currentUserId;
   var bdHelper;
@@ -67,14 +73,14 @@ class _Insert extends State<formulario_insert> {
       formkey.currentState.save();
       if (isUpdating) {
         Student stu = Student(
-            currentUserId, name, paterno, materno, phone, email, matricula);
+            currentUserId, name, paterno, materno, phone, email, matricula, image);
         bdHelper.update(stu);
         setState(() {
           isUpdating = false;
         });
       } else {
         Student stu =
-            Student(null, name, paterno, materno, phone, email, matricula);
+            Student(null, name, paterno, materno, phone, email, matricula, image);
         var col = await bdHelper.getMatricula(matricula);
         print(col);
         if (col == 0) {
@@ -89,19 +95,156 @@ class _Insert extends State<formulario_insert> {
     }
   }
 
+  ImageGallery(BuildContext context) {
+    ImagePicker.pickImage(source: ImageSource.gallery).then((imgFile) {
+      String imgString = Convertir.base64String(imgFile.readAsBytesSync());
+      // Photo photo = Photo(null,imgString);
+      //bdHelper.insert(photo);
+      //fotos();
+      image = imgString;
+      //Funciona para la obtencion de imagen ya sea galeria o camera
+      Navigator.of(context).pop();
+      controllerPhoto.text = "Campo lleno";
+      return image;
+    });
+  }
+
+  ImageCamera(BuildContext context) {
+    ImagePicker.pickImage(source: ImageSource.camera).then((imgFile) {
+      String imgString = Convertir.base64String(imgFile.readAsBytesSync());
+      // Photo photo = Photo(null,imgString);
+      //bdHelper.insert(photo);
+      //fotos();
+      image = imgString;
+      Navigator.of(context).pop();
+      controllerPhoto.text = "Campo lleno";
+      return image;
+    });
+  }
+
+  //Select the image
+  Future<void> _selectphoto(BuildContext context) {
+    return showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+              title: Text("Make a choise!", textAlign: TextAlign.center,),
+              backgroundColor: Colors.deepPurpleAccent[200],
+              content: SingleChildScrollView(
+                child: ListBody(children: <Widget>[
+                  GestureDetector(
+                    child: Text("Gallery"),
+                    onTap: () {
+                      ImageGallery(context);
+                    },
+                  ),
+                  Padding(padding: EdgeInsets.all(10.0),),
+                  GestureDetector(
+                    child: Text("Camera",),
+                    onTap: () {
+                      ImageCamera(context );
+                    },
+                  )
+                ]),
+              ));
+        });
+  }
+
+  Widget menu() {
+    return Drawer(
+      child: ListView(
+        children: <Widget>[
+          DrawerHeader(
+            padding: EdgeInsets.all(50.0),
+            child: Text(
+              "MENU",
+              style: TextStyle(color: Colors.white, fontSize: 55),
+              textAlign: TextAlign.center,
+            ),
+            decoration: BoxDecoration(color: Colors.deepPurple),
+          ),
+          ListTile(
+            leading: Icon(Icons.content_paste, size: 28.0, color: Colors.deepPurpleAccent),
+            title: Text('BUSCAR', style: TextStyle(fontSize: 20.0, color: Colors.deepPurple)),
+            onTap: () {
+              Navigator.pushReplacement(
+                  context, MaterialPageRoute(builder: (context) => busqueda()));
+            },
+          ),
+          ListTile(
+            leading: Icon(
+              Icons.update,
+              color: Colors.yellowAccent,
+              size: 28.0,
+            ),
+            title: Text(
+              'UPDATE',
+              style: TextStyle(fontSize: 20.0, color: Colors.yellowAccent),
+            ),
+            onTap: () {
+              Navigator.pushReplacement(context,
+                  MaterialPageRoute(builder: (context) => formulario_update()));
+            },
+          ),
+          ListTile(
+            leading: Icon(
+              Icons.add,
+              color: Colors.greenAccent,
+              size: 28.0,
+            ),
+            title: Text('INSERT',
+                style: TextStyle(fontSize: 20.0, color: Colors.greenAccent)),
+            onTap: () {
+              Navigator.pushReplacement(context,
+                  MaterialPageRoute(builder: (context) => formulario_insert()));
+            },
+          ),
+          ListTile(
+            leading: Icon(
+              Icons.delete_forever,
+              color: Colors.red[800],
+              size: 28.0,
+            ),
+            title: Text('ELIMINAR',
+                style: TextStyle(fontSize: 20.0, color: Colors.red[800])),
+            onTap: () {
+              Navigator.pushReplacement(context,
+                  MaterialPageRoute(builder: (context) => formulario_delete()));
+            },
+          ),
+          ListTile(
+            leading: Icon(
+              Icons.location_searching,
+              color: Colors.blue[800],
+              size: 28.0,
+            ),
+            title: Text('SELECT',
+                style: TextStyle(fontSize: 20.0, color: Colors.blue[800])),
+            onTap: () {
+              Navigator.pushReplacement(context,
+                  MaterialPageRoute(builder: (context) => formulario_select()));
+            },
+          ),
+
+        ],
+      ),
+    );
+  }
+
+
   final formkey = new GlobalKey<FormState>();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       key: _scaffoldKey,
+      drawer: menu(),
       appBar: new AppBar(
         title: Text(
           "INSERT DATA SQFLite",
         ),
         centerTitle: true,
         backgroundColor: Colors.deepPurple,
-        automaticallyImplyLeading: false,
       ),
       body: Container(
           width: MediaQuery.of(context).size.width,
@@ -119,6 +262,26 @@ class _Insert extends State<formulario_insert> {
                   mainAxisSize: MainAxisSize.min,
                   verticalDirection: VerticalDirection.down,
                   children: <Widget>[
+                    TextFormField(
+                      controller: controllerPhoto,
+                      decoration: InputDecoration(
+                          labelText: "Photo",
+                          suffixIcon: RaisedButton(
+                            color: Colors.deepPurple[200],
+                            onPressed: () {
+                              _selectphoto(context);
+                            },
+                            child: Text("Select image", textAlign: TextAlign.center,),
+                          )),
+                      validator: (val) => val.length == 0
+                          ? 'Debes subir una imagen'
+                          : controllerPhoto.text == "Campo lleno"
+                          ? null
+                          : "Solo imagenes",
+                    ),
+                    SizedBox(
+                      height: 30.0,
+                    ),
                     TextFormField(
                       controller: controllerName,
                       keyboardType: TextInputType.text,
@@ -196,7 +359,7 @@ class _Insert extends State<formulario_insert> {
                                   .hasMatch(val)
                               ? 'Enter mail'
                               : null,
-                      onSaved: (val) => email = val,
+                      onSaved: (val) => email = val.toUpperCase(),
                     ),
                     SizedBox(
                       height: 20.0,
@@ -280,98 +443,6 @@ class _Insert extends State<formulario_insert> {
               ),
             ),
           )),
-      endDrawer: new Drawer(
-        child: ListView(
-          children: <Widget>[
-            DrawerHeader(
-              padding: EdgeInsets.all(50.0),
-              child: Text(
-                "MENU",
-                style: TextStyle(color: Colors.white, fontSize: 55),
-                textAlign: TextAlign.center,
-              ),
-              decoration: BoxDecoration(color: Colors.deepPurple),
-            ),
-            ListTile(
-              leading: Icon(
-                Icons.home,
-                color: Colors.deepPurple,
-                size: 28.0,
-              ),
-              title: Text(
-                'HOME',
-                style: TextStyle(fontSize: 20.0, color: Colors.deepPurple),
-              ),
-              onTap: () {
-                Navigator.pushReplacement(
-                    context, MaterialPageRoute(builder: (context) => MyApp()));
-              },
-            ),
-            ListTile(
-              leading: Icon(
-                Icons.update,
-                color: Colors.yellowAccent,
-                size: 28.0,
-              ),
-              title: Text(
-                'UPDATE',
-                style: TextStyle(fontSize: 20.0, color: Colors.yellowAccent),
-              ),
-              onTap: () {
-                Navigator.pushReplacement(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => formulario_update()));
-              },
-            ),
-            ListTile(
-              leading: Icon(
-                Icons.add,
-                color: Colors.greenAccent,
-                size: 28.0,
-              ),
-              title: Text('INSERT',
-                  style: TextStyle(fontSize: 20.0, color: Colors.greenAccent)),
-              onTap: () {
-                Navigator.pushReplacement(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => formulario_insert()));
-              },
-            ),
-            ListTile(
-              leading: Icon(
-                Icons.delete_forever,
-                color: Colors.red[800],
-                size: 28.0,
-              ),
-              title: Text('ELIMINAR',
-                  style: TextStyle(fontSize: 20.0, color: Colors.red[800])),
-              onTap: () {
-                Navigator.pushReplacement(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => formulario_delete()));
-              },
-            ),
-            ListTile(
-              leading: Icon(
-                Icons.search,
-                color: Colors.blueAccent,
-                size: 28.0,
-              ),
-              title: Text('BUSCAR',
-                  style: TextStyle(fontSize: 20.0, color: Colors.blueAccent)),
-              onTap: () {
-                Navigator.pushReplacement(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => formulario_select()));
-              },
-            ),
-          ],
-        ),
-      ),
     );
   }
 }

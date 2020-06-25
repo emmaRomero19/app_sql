@@ -1,6 +1,8 @@
 import 'package:appsql/form_select.dart';
+import 'package:appsql/search.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'convert.dart';
 import 'form_delete.dart';
 import 'form_update.dart';
 import 'students.dart';
@@ -83,6 +85,14 @@ class _myHomePageState extends State<homePage> {
             decoration: BoxDecoration(color: Colors.deepPurple),
           ),
           ListTile(
+            leading: Icon(Icons.content_paste, size: 28.0, color: Colors.deepPurpleAccent),
+            title: Text('BUSCAR', style: TextStyle(fontSize: 20.0, color: Colors.deepPurple)),
+            onTap: () {
+              Navigator.push(
+                  context, MaterialPageRoute(builder: (context) => busqueda()));
+            },
+          ),
+          ListTile(
             leading: Icon(
               Icons.update,
               color: Colors.yellowAccent,
@@ -125,17 +135,18 @@ class _myHomePageState extends State<homePage> {
           ),
           ListTile(
             leading: Icon(
-              Icons.search,
-              color: Colors.blueAccent,
+              Icons.location_searching,
+              color: Colors.blue[800],
               size: 28.0,
             ),
-            title: Text('BUSCAR',
-                style: TextStyle(fontSize: 20.0, color: Colors.blueAccent)),
+            title: Text('SELECT',
+                style: TextStyle(fontSize: 20.0, color: Colors.blue[800])),
             onTap: () {
               Navigator.push(context,
                   MaterialPageRoute(builder: (context) => formulario_select()));
             },
           ),
+
         ],
       ),
     );
@@ -188,19 +199,24 @@ class _myHomePageState extends State<homePage> {
                         color: Colors.yellowAccent)),
               ),
               DataColumn(
-                label: Text("Email",
+                label: Text("Phone",
                     style: TextStyle(
                         fontSize: 15.0,
                         fontWeight: FontWeight.bold,
                         color: Colors.yellowAccent)),
               ),
               DataColumn(
-                label: Text("Phone",
+                label: Text("Email",
                     style: TextStyle(
                         fontSize: 15.0,
                         fontWeight: FontWeight.bold,
                         color: Colors.yellowAccent)),
-              )
+              ),
+              DataColumn(label: Text("Photo",
+                  style: TextStyle(
+                      fontSize: 15.0,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.yellowAccent)),)
             ],
             rows: Studentss.map((student) => DataRow(cells: [
                   DataCell(Text(student.controlum.toString(),
@@ -228,6 +244,8 @@ class _myHomePageState extends State<homePage> {
                   DataCell(Text(student.email.toString(),
                       style:
                           TextStyle(fontSize: 16.0, color: Colors.deepOrange))),
+                  DataCell(Convertir.imageFromBase64sString(student.photo),
+                  ),
                 ])).toList(),
           ),
         ));
