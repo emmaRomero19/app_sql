@@ -160,11 +160,11 @@ class _Delete extends State<formulario_delete> {
             columns: [
               DataColumn(
                 label: Text(
-                  "Control",
+                  "Eliminar",
                   style: TextStyle(
                     fontSize: 15.0,
                     fontWeight: FontWeight.bold,
-                    color: Colors.yellowAccent,
+                    color: Colors.red[800],
                   ),
                 ),
               ),
@@ -217,11 +217,13 @@ class _Delete extends State<formulario_delete> {
                       color: Colors.yellowAccent)),)
             ],
             rows: Studentss.map((student) => DataRow(cells: [
-              DataCell(Text(student.controlum.toString(),
-                  style: TextStyle(
-                      fontSize: 16.0,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.yellow))),
+              DataCell(IconButton(
+                icon: Icon(Icons.delete, color: Colors.red, size: 30.0,),
+                onPressed: () {
+                  bdHelper.delete(student.controlum);
+                  refreshList();
+                },
+              )),
               DataCell(Text(student.matricula.toString(),
                   style:
                   TextStyle(fontSize: 16.0, color: Colors.deepOrange))),

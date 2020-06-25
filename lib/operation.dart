@@ -57,7 +57,7 @@ class DBHelper {
       }
     }}
     else{
-      List<Map> maps = await dbClient.query(TABLE, columns: [Id, NAME, PATERNO, MATERNO, PHONE, EMAIL, MATRICULA], where: '$MATRICULA LIKE ?', whereArgs: [mat]);
+      List<Map> maps = await dbClient.query(TABLE, columns: [Id, NAME, PATERNO, MATERNO, PHONE, EMAIL, MATRICULA, PHOTO], where: '$MATRICULA LIKE ?', whereArgs: [mat]);
       if (maps.length > 0) {
         for (int i = 0; i < maps.length; i++) {
           studentss.add(Student.fromMap(maps[i]));

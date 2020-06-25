@@ -1,5 +1,4 @@
 import 'package:flutter/cupertino.dart';
-
 import 'form_delete.dart';
 import 'form_insert.dart';
 import 'form_select.dart';
@@ -10,7 +9,6 @@ import 'students.dart';
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'convert.dart';
-//import 'detalles.dart';
 
 class busqueda extends StatefulWidget {
   @override

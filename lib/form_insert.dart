@@ -6,7 +6,6 @@ import 'form_select.dart';
 import 'form_update.dart';
 import 'students.dart';
 import 'operation.dart';
-import 'main.dart';
 import 'package:image_picker/image_picker.dart';
 import 'convert.dart';
 
@@ -98,11 +97,7 @@ class _Insert extends State<formulario_insert> {
   ImageGallery(BuildContext context) {
     ImagePicker.pickImage(source: ImageSource.gallery).then((imgFile) {
       String imgString = Convertir.base64String(imgFile.readAsBytesSync());
-      // Photo photo = Photo(null,imgString);
-      //bdHelper.insert(photo);
-      //fotos();
       image = imgString;
-      //Funciona para la obtencion de imagen ya sea galeria o camera
       Navigator.of(context).pop();
       controllerPhoto.text = "Campo lleno";
       return image;
@@ -112,9 +107,6 @@ class _Insert extends State<formulario_insert> {
   ImageCamera(BuildContext context) {
     ImagePicker.pickImage(source: ImageSource.camera).then((imgFile) {
       String imgString = Convertir.base64String(imgFile.readAsBytesSync());
-      // Photo photo = Photo(null,imgString);
-      //bdHelper.insert(photo);
-      //fotos();
       image = imgString;
       Navigator.of(context).pop();
       controllerPhoto.text = "Campo lleno";

@@ -32,7 +32,6 @@ class _UpdateState extends State<formulario_update> {
   int currentUserId;
   int opcion;
 
-
   String descriptive_text = "Student Name";
 
   final formkey = new GlobalKey<FormState>();
@@ -61,54 +60,57 @@ class _UpdateState extends State<formulario_update> {
     controllerPhoto.text = "";
   }
 
-
-  void updateData(){
+  void updateData() {
     print("Valor de Opción");
     print(opcion);
     if (formkey.currentState.validate()) {
       formkey.currentState.save();
       //NOMBRE
-      if (opcion==1) {
-        Student stu = Student(currentUserId,valor, paterno, materno, phone, email, matricula, image);
+      if (opcion == 1) {
+        Student stu = Student(currentUserId, valor, paterno, materno, phone,
+            email, matricula, image);
         dbHelper.update(stu);
       }
       //APELLIDO PATERNO
-      else if (opcion==2) {
-        Student stu = Student(currentUserId,name, valor, materno, phone, email, matricula, image);
+      else if (opcion == 2) {
+        Student stu = Student(currentUserId, name, valor, materno, phone, email,
+            matricula, image);
         dbHelper.update(stu);
       }
       //APELLIDO MATERNO
-      else if (opcion==3) {
-        Student stu = Student(currentUserId,name, paterno, valor,phone, email, matricula, image);
+      else if (opcion == 3) {
+        Student stu = Student(currentUserId, name, paterno, valor, phone, email,
+            matricula, image);
         dbHelper.update(stu);
       }
       //PHONE
-      else if (opcion==4) {
-        Student stu = Student(currentUserId,name, paterno, materno, valor, email, matricula, image);
+      else if (opcion == 4) {
+        Student stu = Student(currentUserId, name, paterno, materno, valor,
+            email, matricula, image);
         dbHelper.update(stu);
       }
       //EMAIL
-      else if (opcion==5) {
-        Student stu = Student(currentUserId,name, paterno, materno, phone, valor, matricula, image);
+      else if (opcion == 5) {
+        Student stu = Student(currentUserId, name, paterno, materno, phone,
+            valor, matricula, image);
         dbHelper.update(stu);
       }
       //MATRICULA
-      else if (opcion==6) {
-        Student stu = Student(currentUserId, name, paterno, materno, phone, email, valor, image);
+      else if (opcion == 6) {
+        Student stu = Student(
+            currentUserId, name, paterno, materno, phone, email, valor, image);
         dbHelper.update(stu);
       }
       //photo
-      else if (opcion==7) {
-        Student stu = Student(currentUserId,name, paterno, materno, phone, email, matricula, valor);
+      else if (opcion == 7) {
+        Student stu = Student(currentUserId, name, paterno, materno, phone,
+            email, matricula, valor);
         dbHelper.update(stu);
       }
       cleanData();
       refreshList();
     }
   }
-
-
-
 
   //Metodo para imagen
   pickImagefromGallery(BuildContext context) {
@@ -117,7 +119,7 @@ class _UpdateState extends State<formulario_update> {
       image = imgString;
       //Funciona para la obtencion de imagen ya sea galeria o camera
       Navigator.of(context).pop();
-      controllerPhoto.text= "Campo lleno";
+      controllerValue.text = image;
       return image;
     });
   }
@@ -127,7 +129,7 @@ class _UpdateState extends State<formulario_update> {
       String imgString = Convertir.base64String(imgFile.readAsBytesSync());
       image = imgString;
       Navigator.of(context).pop();
-      controllerPhoto.text= "Campo lleno";
+      controllerValue.text = image;
       return image;
     });
   }
@@ -138,7 +140,10 @@ class _UpdateState extends State<formulario_update> {
         context: context,
         builder: (BuildContext context) {
           return AlertDialog(
-              title: Text("Make a choise!", textAlign: TextAlign.center,),
+              title: Text(
+                "Make a choise!",
+                textAlign: TextAlign.center,
+              ),
               backgroundColor: Colors.deepPurpleAccent[200],
               content: SingleChildScrollView(
                 child: ListBody(children: <Widget>[
@@ -148,11 +153,15 @@ class _UpdateState extends State<formulario_update> {
                       pickImagefromGallery(context);
                     },
                   ),
-                  Padding(padding: EdgeInsets.all(10.0),),
+                  Padding(
+                    padding: EdgeInsets.all(10.0),
+                  ),
                   GestureDetector(
-                    child: Text("Camera",),
+                    child: Text(
+                      "Camera",
+                    ),
                     onTap: () {
-                      pickImagefromCamera(context );
+                      pickImagefromCamera(context);
                     },
                   )
                 ]),
@@ -176,19 +185,26 @@ class _UpdateState extends State<formulario_update> {
               keyboardType: TextInputType.text,
               decoration: InputDecoration(
                   labelText: 'Update',
-                  contentPadding:
-                  EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
+                  contentPadding: EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
                   icon: Icon(
                     Icons.content_paste,
                     size: 35.0,
                   ),
                   border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(32.0))),
-              validator: (val) => change == false ? val.length == 0 ? 'Enter Data' : controllerPhoto.text != "Campo lleno"
-                  ? "Solo se puede imagenes" : null : val.length == 0 ? 'Enter Data' : null,
-              onSaved: (val) => change ? valor = controllerValue.text : valor = image,
+              validator: (val) => change == false
+                  ? val.length == 0
+                      ? 'Enter Data'
+                      : controllerPhoto.text != "Campo lleno"
+                          ? "Solo se puede imagenes"
+                          : null
+                  : val.length == 0 ? 'Enter Data' : null,
+              onSaved: (val) =>
+                  change ? valor = controllerValue.text : valor = image,
             ),
-            SizedBox(height: 30,),
+            SizedBox(
+              height: 30,
+            ),
             new Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: <Widget>[
@@ -237,8 +253,10 @@ class _UpdateState extends State<formulario_update> {
             decoration: BoxDecoration(color: Colors.deepPurple),
           ),
           ListTile(
-            leading: Icon(Icons.content_paste, size: 28.0, color: Colors.deepPurpleAccent),
-            title: Text('BUSCAR', style: TextStyle(fontSize: 20.0, color: Colors.deepPurple)),
+            leading: Icon(Icons.content_paste,
+                size: 28.0, color: Colors.deepPurpleAccent),
+            title: Text('BUSCAR',
+                style: TextStyle(fontSize: 20.0, color: Colors.deepPurple)),
             onTap: () {
               Navigator.pushReplacement(
                   context, MaterialPageRoute(builder: (context) => busqueda()));
@@ -298,12 +316,10 @@ class _UpdateState extends State<formulario_update> {
                   MaterialPageRoute(builder: (context) => formulario_select()));
             },
           ),
-
         ],
       ),
     );
   }
-
 
 //Mostrar datos
   SingleChildScrollView dataTable(List<Student> Studentss) {
@@ -365,41 +381,154 @@ class _UpdateState extends State<formulario_update> {
                         fontWeight: FontWeight.bold,
                         color: Colors.yellowAccent)),
               ),
-              DataColumn(label: Text("Photo",
-                  style: TextStyle(
-                      fontSize: 15.0,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.yellowAccent)),)
+              DataColumn(
+                label: Text("Photo",
+                    style: TextStyle(
+                        fontSize: 15.0,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.yellowAccent)),
+              )
             ],
             rows: Studentss.map((student) => DataRow(cells: [
-              DataCell(Text(student.controlum.toString(),
-                  style: TextStyle(
-                      fontSize: 16.0,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.yellow))),
-              DataCell(Text(student.matricula.toString(),
-                  style:
-                  TextStyle(fontSize: 16.0, color: Colors.deepOrange))),
-              DataCell(
-                Text(student.name.toString(),
-                    style: TextStyle(
-                        fontSize: 16.0, color: Colors.deepOrange)),
-              ),
-              DataCell(Text(student.paterno.toString(),
-                  style:
-                  TextStyle(fontSize: 16.0, color: Colors.deepOrange))),
-              DataCell(Text(student.materno.toString(),
-                  style:
-                  TextStyle(fontSize: 16.0, color: Colors.deepOrange))),
-              DataCell(Text(student.phone.toString(),
-                  style:
-                  TextStyle(fontSize: 16.0, color: Colors.deepOrange))),
-              DataCell(Text(student.email.toString(),
-                  style:
-                  TextStyle(fontSize: 16.0, color: Colors.deepOrange))),
-              DataCell(Convertir.imageFromBase64sString(student.photo),
-              ),
-            ])).toList(),
+                  DataCell(Text(student.controlum.toString(),
+                      style: TextStyle(
+                          fontSize: 16.0,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.yellow))),
+                  DataCell(
+                      Text(student.matricula.toString(),
+                          style: TextStyle(
+                              fontSize: 16.0,
+                              color: Colors.deepOrange)), onTap: () {
+                    setState(() {
+                      isUpdating = true;
+                      change = true;
+                      currentUserId = student.controlum;
+                      image = student.photo;
+                      name = student.name;
+                      paterno = student.paterno;
+                      materno = student.materno;
+                      phone = student.phone;
+                      email = student.email;
+                      matricula = student.matricula;
+                      opcion = 6;
+                    });
+                    controllerValue.text = student.matricula;
+                  }),
+                  DataCell(
+                    Text(student.name.toString(),
+                        style: TextStyle(
+                            fontSize: 16.0, color: Colors.deepOrange)), onTap: () {
+                    setState(() {
+                      isUpdating = true;
+                      change = true;
+                      currentUserId = student.controlum;
+                      image = student.photo;
+                      name = student.name;
+                      paterno = student.paterno;
+                      materno = student.materno;
+                      phone = student.phone;
+                      email = student.email;
+                      matricula = student.matricula;
+                      opcion = 1;
+                    });
+                    controllerValue.text = student.name;
+                  }
+                  ),
+                  DataCell(Text(student.paterno.toString(),
+                      style:
+                          TextStyle(fontSize: 16.0, color: Colors.deepOrange)), onTap: () {
+                    setState(() {
+                      isUpdating = true;
+                      change = true;
+                      currentUserId = student.controlum;
+                      image = student.photo;
+                      name = student.name;
+                      paterno = student.paterno;
+                      materno = student.materno;
+                      phone = student.phone;
+                      email = student.email;
+                      matricula = student.matricula;
+                      opcion = 2;
+                    });
+                    controllerValue.text = student.paterno;
+                  }),
+                  DataCell(Text(student.materno.toString(),
+                      style:
+                          TextStyle(fontSize: 16.0, color: Colors.deepOrange)), onTap: () {
+        setState(() {
+        isUpdating = true;
+        change = true;
+        currentUserId = student.controlum;
+        image = student.photo;
+        name = student.name;
+        paterno = student.paterno;
+        materno = student.materno;
+        phone = student.phone;
+        email = student.email;
+        matricula = student.matricula;
+        opcion = 3;
+        });
+        controllerValue.text = student.materno;
+        }),
+                  DataCell(Text(student.phone.toString(),
+                      style:
+                          TextStyle(fontSize: 16.0, color: Colors.deepOrange)), onTap: () {
+    setState(() {
+    isUpdating = true;
+    change = true;
+    currentUserId = student.controlum;
+    image = student.photo;
+    name = student.name;
+    paterno = student.paterno;
+    materno = student.materno;
+    phone = student.phone;
+    email = student.email;
+    matricula = student.matricula;
+    opcion = 4;
+    });
+    controllerValue.text = student.phone;
+    }),
+                  DataCell(Text(student.email.toString(),
+                      style:
+                          TextStyle(fontSize: 16.0, color: Colors.deepOrange)),  onTap: () {
+                    setState(() {
+                      isUpdating = true;
+                      change = true;
+                      currentUserId = student.controlum;
+                      image = student.photo;
+                      name = student.name;
+                      paterno = student.paterno;
+                      materno = student.materno;
+                      phone = student.phone;
+                      email = student.email;
+                      matricula = student.matricula;
+                      opcion = 5;
+                    });
+                    controllerValue.text = student.email;
+                  }),
+                  DataCell(
+                    Convertir.imageFromBase64sString(student.photo), onTap: () {
+                      _selectfoto(context);
+                      print(Convertir.imageFromBase64sString(student.photo));
+                      print(image);
+                      setState(() {
+                      isUpdating = true;
+                      change = true;
+                      currentUserId = student.controlum;
+                      image = student.photo;
+                      name = student.name;
+                      paterno = student.paterno;
+                      materno = student.materno;
+                      phone = student.phone;
+                      email = student.email;
+                      matricula = student.matricula;
+                      opcion = 7;
+                    });
+                    controllerValue.text = student.photo;
+                  }
+                  ),
+                ])).toList(),
           ),
         ));
   }
@@ -426,7 +555,7 @@ class _UpdateState extends State<formulario_update> {
 // TODO: implement build
     return new Scaffold(
       resizeToAvoidBottomInset: false,
-      drawer: menu(),//new line
+      drawer: menu(), //new line
       appBar: new AppBar(
         title: Text('Actualizar Datos'),
         backgroundColor: Colors.deepPurple,
@@ -438,7 +567,6 @@ class _UpdateState extends State<formulario_update> {
           children: <Widget>[
             form(),
             list(),
-
           ],
         ),
       ),
